@@ -1,0 +1,46 @@
+from random import random
+def main():
+    introduction()
+    A_prob = float(input("Enter Player A's ability as a prob. from 0-1: "))
+    B_prob = float(input("Enter Player B's ability as a prob. from 0-1: "))
+    num_of_sim = int(input("Enter the number of games to simulate: "))
+    [A_wins, B_wins] = play(A_prob, B_prob, num_of_sim)
+    print("\nGames simulated:", num_of_sim)
+    print("Games A wins: {0} ({1}%)".format(A_wins, round(A_wins*100/(A_wins+B_wins), 2)))
+    print("Games B wins: {0} ({1}%)".format(B_wins, round(B_wins*100/(A_wins+B_wins), 2)))
+def introduction():
+    print("\t>> This is a program that simulates racquet ball for 2 players <<\n")
+
+def play(A_prob, B_prob, num_of_sim): #Will return a list of 2 scores for player A and player B
+    overall_score = [0,0]
+    while True:
+        if sum(overall_score) == num_of_sim: break
+        winner = checkWinBtw(A_prob, B_prob)
+        if winner == "A":
+            overall_score[0] += 1
+        else:
+            overall_score[1] += 1
+    return overall_score
+def checkWinBtw(A_prob, B_prob):    # Will return the winner (Either A or B)
+    server, server_prob = "A", A_prob
+    scores = [0,0]
+    while True:
+        if scores[0]==15 or scores[1]==15: break
+        server, server_prob, points = checkSingleWin(server, server_prob, A_prob, B_prob)
+        scores[0] += points[0]
+        scores[1] += points[1]
+    if scores[0] > scores[1]:
+        return "A"
+    else:
+        return "B"
+def checkSingleWin(server, server_prob, A_prob, B_prob):    # will return server, server_prob and points respectively
+    if random()<server_prob:
+        if server=="A":
+            return "A", A_prob, [1,0]
+        else:
+            return "B", B_prob, [0,1]
+    elif server=="A":
+        return "B", B_prob, [0,0]
+    else:
+        return "A", A_prob, [0,0]
+main()
